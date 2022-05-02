@@ -3,6 +3,9 @@ import 'tachyons';
 import CanvasDraw from 'react-canvas-draw';
 
 const App = () => {
+  const refresh = () => {
+    window.location.reload(false);
+  };
   return (
     <div>
       <div>
@@ -44,7 +47,11 @@ const App = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <a className="f6 link dim ph3 pv2 mb2 dib white bg-black" href="#0">
+          <a
+            className="f6 link dim ph3 pv2 mb2 dib white bg-black"
+            href="#0"
+            onClick={refresh}
+          >
             Submit
           </a>
         </div>
