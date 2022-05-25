@@ -21,8 +21,6 @@ const App = () => {
         console.log(error);
       });
   };
-
-  return (
     <div>
       <div>
         <h1 className="f1 tc lh-title pa3">Handwritten Digits</h1>
