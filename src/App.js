@@ -1,10 +1,16 @@
 import './App.css';
 import 'tachyons';
+import React, { useState, useEffect } from 'react';
+import PredictNumber from './predict';
+import predict from './predict';
 import axios from 'axios';
 import CanvasDraw from 'react-canvas-draw';
 
-const App = () => {
-  const test = () => {
+function App() {
+  const [num, setNum] = useState(1);
+  const [certainty, setCertainty] = useState(72);
+
+  const predict = () => {
     const api =
       'https://fio4gsagu6.execute-api.us-east-1.amazonaws.com/default/predict_number';
     const data = {
@@ -14,16 +20,24 @@ const App = () => {
     };
 
     const requestOptions = {
-      mode: 'no-cors',
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(data),
     };
     fetch(api, requestOptions)
       .then((response) => response.json())
       .then((json) => console.log(json))
       .catch((error) => console.log('Error: ' + error.message));
+
+    setNum(num + 1);
+    setCertainty(certainty + 1);
   };
+
+  useEffect(() => {
+    predict();
+  }, []);
 
   return (
     <div>
@@ -58,24 +72,22 @@ const App = () => {
                 brushColor={'darkblue'}
               />
             </div>
-            <div className="flex justify-center">
-              <p>
-                <strong>Prediction:</strong> 5 with 80%
-              </p>
-            </div>
+            <PredictNumber num={num} certainty={certainty} />
           </div>
         </div>
         <div className="flex justify-center">
-          <a className="f6 link dim ph3 pv2 mb2 dib white bg-black" href="#0">
+          <a
+            type="submit"
+            onClick={predict}
+            className="f6 link dim ph3 pv2 mb2 dib white bg-black"
+            href="#0"
+          >
             Submit
           </a>
-          <form type="submit">
-            <button onSubmit={test()}>Submit</button>
-          </form>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default App;
