@@ -1,26 +1,31 @@
-import "./App.css";
-import "tachyons";
-import axios from "axios";
-import CanvasDraw from "react-canvas-draw";
+import './App.css';
+import 'tachyons';
+import axios from 'axios';
+import CanvasDraw from 'react-canvas-draw';
 
 const App = () => {
   const test = () => {
     const api =
-      "https://20zcp67omb.execute-api.us-east-1.amazonaws.com/staging";
+      'https://fio4gsagu6.execute-api.us-east-1.amazonaws.com/default/predict_number';
     const data = {
-      key1: "Cat",
-      key2: "N",
-      key3: "Tran",
+      key1: 'Cat',
+      key2: 'N',
+      key3: 'Tran',
     };
-    axios
-      .post(api, data)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    const requestOptions = {
+      mode: 'no-cors',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    };
+    fetch(api, requestOptions)
+      .then((response) => response.json())
+      .then((json) => console.log(json))
+      .catch((error) => console.log('Error: ' + error.message));
   };
+
+  return (
     <div>
       <div>
         <h1 className="f1 tc lh-title pa3">Handwritten Digits</h1>
@@ -50,7 +55,7 @@ const App = () => {
                 canvasWidth={300}
                 canvasHeight={300}
                 lazyRadius={1}
-                brushColor={"darkblue"}
+                brushColor={'darkblue'}
               />
             </div>
             <div className="flex justify-center">
@@ -61,13 +66,12 @@ const App = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <a
-            className="f6 link dim ph3 pv2 mb2 dib white bg-black"
-            href="#0"
-            onClick={test()}
-          >
+          <a className="f6 link dim ph3 pv2 mb2 dib white bg-black" href="#0">
             Submit
           </a>
+          <form type="submit">
+            <button onSubmit={test()}>Submit</button>
+          </form>
         </div>
       </div>
     </div>
