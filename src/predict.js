@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-import React from 'react';
-
-const PredictNumber = ({ num, certainty }) => {
-=======
 import React, { useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 
@@ -39,11 +34,9 @@ async function predict(model, imageData) {
 
 const PredictNumber = ({ imageData }) => {
   const model = tf.loadLayersModel('./cats_model.h5');
-  const result = predict(model, imageData);
 
   predict();
 
->>>>>>> Stashed changes
   return (
     <div className="flex justify-center">
       <p>
