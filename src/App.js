@@ -2,11 +2,11 @@ import './App.css';
 import 'tachyons';
 import React, { useState, useEffect } from 'react';
 import PredictNumber from './predict';
-import predict from './predict';
-import axios from 'axios';
 import CanvasDraw from 'react-canvas-draw';
+import * as tf from '@tensorflow/tfjs';
 
 function App() {
+<<<<<<< Updated upstream
   const [num, setNum] = useState(1);
   const [certainty, setCertainty] = useState(72);
 
@@ -38,6 +38,92 @@ function App() {
   useEffect(() => {
     predict();
   }, []);
+=======
+  const [model, setModel] = useState(null);
+  const [number, setNumber] = useState(-1);
+  const [imageData, setImageData] = useState(null);
+  const [certainty, setCertainty] = useState(-1);
+  const [isModelLoading, setIsModelLoading] = useState(false);
+  const canvasRef = useRef();
+
+  const loadModel = async () => {
+    setIsModelLoading(true);
+    try {
+      const model = await tf.loadLayersModel(
+        'https://raw.githubusercontent.com/tsu-nera/tfjs-mnist-study/master/model/model.json'
+      );
+      setModel(model);
+      setIsModelLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsModelLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadModel();
+  }, []);
+
+  const saveImage = () => {
+    //const base64 = canvasRef.current.canvasContainer.childNodes[1].toDataURL();
+    const drawingCanvas = canvasRef.current.canvas.drawing;
+
+    const context = document.createElement('canvas').getContext('2d');
+    const width = 28;
+    const height = 28;
+
+    context.drawImage(drawingCanvas, 0, 0, width, height);
+    const iData = context.getImageData(0, 0, width, height);
+
+    for (let i = 0; i < iData.data.length; i += 4) {
+      const avg = (iData.data[i] + iData.data[i + 1] + iData.data[i + 2]) / 3;
+      iData.data[i] = avg;
+      iData.data[i + 1] = avg;
+      iData.data[i + 2] = avg;
+    }
+
+    setImageData(iData);
+  };
+
+  if (isModelLoading) {
+    //
+  } else {
+    //
+  }
+
+  const predict = async () => {
+    if (!model) {
+      console.log('null model!');
+      return;
+    }
+
+    loadModel();
+    saveImage();
+
+    await tf.tidy(() => {
+      let maxProb = 0;
+      let number;
+      let img = tf.browser.fromPixels(imageData, 1);
+      img = tf.cast(img, 'float32').div(tf.scalar(255));
+
+      // reshape input format (shape: [batch_size, width, height, channels])
+      img = img.expandDims();
+
+      const output = model.predict(img);
+      const predictions = Array.from(output.dataSync());
+
+      predictions.forEach((prob, num) => {
+        if (prob > maxProb) {
+          maxProb = prob;
+          number = num;
+        }
+      });
+
+      setNumber(number);
+      setCertainty((maxProb * 100) | 0);
+    });
+  };
+>>>>>>> Stashed changes
 
   return (
     <div>
@@ -72,7 +158,11 @@ function App() {
                 brushColor={'darkblue'}
               />
             </div>
-            <PredictNumber num={num} certainty={certainty} />
+            <div className="flex justify-center">
+              <p>
+                <strong>Prediction:</strong> {number} with {certainty}%
+              </p>
+            </div>
           </div>
         </div>
         <div className="flex justify-center">
