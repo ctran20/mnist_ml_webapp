@@ -40,7 +40,7 @@ const PredictNumber = ({ imageData }) => {
   return (
     <div className="flex justify-center">
       <p>
-        <strong>Prediction:</strong> {result[0]} with {result[1]}%
+        <strong>Prediction:</strong> {} with {}%
       </p>
     </div>
   );
